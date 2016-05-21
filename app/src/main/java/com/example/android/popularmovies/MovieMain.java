@@ -134,10 +134,10 @@ public class MovieMain extends AppCompatActivity implements View.OnClickListener
             try {
                 URL url;
                 if (isPopular) {
-                    url = new URL("http://api.themoviedb.org/3/movie/" + "popular" + "?api_key=4604e49e5c987815097edb08643cbbec");
+                    url = new URL("http://api.themoviedb.org/3/movie/" + "popular" + "?api_key=[api_key]");
                 }
                 else {
-                    url = new URL("http://api.themoviedb.org/3/movie/" + "top_rated" + "?api_key=4604e49e5c987815097edb08643cbbec");
+                    url = new URL("http://api.themoviedb.org/3/movie/" + "top_rated" + "?api_key=[api_key]");
                 }
 
                 urlConnection = (HttpURLConnection) url.openConnection();
