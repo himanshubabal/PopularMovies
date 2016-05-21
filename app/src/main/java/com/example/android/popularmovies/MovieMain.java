@@ -73,7 +73,6 @@ public class MovieMain extends AppCompatActivity implements View.OnClickListener
         Boolean popular = intent.getBooleanExtra("isPopular", true);
         if (popular) {
             isPopular = true;
-            //todo -> toolbar title not working
             toolbar.setTitle("Popular Movies");
         }
         else {
