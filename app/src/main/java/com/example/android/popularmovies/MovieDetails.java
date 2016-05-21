@@ -80,7 +80,7 @@ public class MovieDetails extends AppCompatActivity{
             jsonStr = null;
 
             try {
-                URL url = new URL("https://api.themoviedb.org/3/movie/" + params[0] + "?api_key=4604e49e5c987815097edb08643cbbec");
+                URL url = new URL("https://api.themoviedb.org/3/movie/" + params[0] + "?api_key=[api_key]");
 
 
                 urlConnection = (HttpURLConnection) url.openConnection();
