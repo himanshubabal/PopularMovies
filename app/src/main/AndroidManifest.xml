@@ -25,7 +25,8 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".MovieDetails"
-            android:configChanges="orientation|keyboardHidden|screenSize">
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

@@ -6,8 +6,10 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -32,7 +34,8 @@ public class MovieDetails extends AppCompatActivity{
     String [] genreArray;
     ProgressDialog progress;
     ImageView backdropImage, posterImage;
-    TextView titleText, taglineText, overviewText;
+    TextView titleText, taglineText, overviewText, ratingText, releaseYearText;
+    CollapsingToolbarLayout collapsingToolbar;
 
 
     @Override
@@ -47,6 +50,8 @@ public class MovieDetails extends AppCompatActivity{
         titleText = (TextView) findViewById(R.id.movie_title);
         overviewText = (TextView) findViewById(R.id.movie_overview);
         taglineText = (TextView) findViewById(R.id.movie_tagline);
+        ratingText = (TextView) findViewById(R.id.movie_rating);
+        releaseYearText = (TextView) findViewById(R.id.movie_year);
 
         GetMovie getMovie = new GetMovie();
         getMovie.execute(id);
@@ -55,6 +60,13 @@ public class MovieDetails extends AppCompatActivity{
         progress.setTitle("Loading");
         progress.setMessage("Please wait while loading...");
         progress.show();
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.Mytoolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapse_toolbar);
+
 
     }
 
@@ -188,9 +200,12 @@ public class MovieDetails extends AppCompatActivity{
         Picasso.with(this).load(backdrop).resize(widthPixelsBack, heightPixelsBack).into(backdropImage);
         Picasso.with(this).load(posterPath).resize(widthPixelsPoster, heightPixelPoster).into(posterImage);
 
+        collapsingToolbar.setTitle(title);
         titleText.setText(title);
         overviewText.setText(overview);
         taglineText.setText(tagline);
+        ratingText.setText(rating);
+        releaseYearText.setText(releaseYear);
     }
 
     public void restartActivity(){
