@@ -1,6 +1,7 @@
 package com.example.android.popularmovies;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -9,11 +10,14 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
 import android.widget.GridView;
 
 import org.json.JSONArray;
@@ -28,6 +32,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class MovieMain extends AppCompatActivity implements View.OnClickListener{
     GridView movieGrid;
@@ -38,12 +43,17 @@ public class MovieMain extends AppCompatActivity implements View.OnClickListener
     private FloatingActionButton fab,fab1,fab2;
     private Animation fab_open,fab_close,rotate_forward,rotate_backward;
     ProgressDialog progress;
+    RecyclerView movieRecycler;
+    MovieAdapter movieAdapter;
+    List<Movies> moviesNewList = new ArrayList<>();
+    RecyclerView.LayoutManager layoutManager;
+    Context context;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.movie_main);
+        setContentView(R.layout.movie_main_recycle);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -52,7 +62,8 @@ public class MovieMain extends AppCompatActivity implements View.OnClickListener
         progress.setMessage("Please wait while loading...");
         progress.show();
 
-        movieGrid = (GridView) findViewById(R.id.movieGridView);
+        //movieGrid = (GridView) findViewById(R.id.movieGridView);
+
 
         fab = (FloatingActionButton)findViewById(R.id.fab);
         fab1 = (FloatingActionButton)findViewById(R.id.fab1);
@@ -80,6 +91,29 @@ public class MovieMain extends AppCompatActivity implements View.OnClickListener
             toolbar.setTitle("Top Rated Movies");
         }
         getMovies.execute();
+
+        Log.i("movie", "reached cp-1");
+        //*****
+        movieRecycler = (RecyclerView) findViewById(R.id.movie_recycler);
+        //movieRecycler.setHasFixedSize(true);
+
+        layoutManager = new GridLayoutManager(getApplicationContext(), 2);
+
+        movieRecycler.setItemAnimator(new DefaultItemAnimator());
+        context = getApplicationContext();
+        movieAdapter = new MovieAdapter(moviesNewList, context);
+        movieRecycler.setLayoutManager(layoutManager);
+        movieRecycler.setAdapter(movieAdapter);
+
+
+        //*****
+
+    }
+
+
+    public void prepareData(){
+        Log.i("newMovieList", moviesNewList.size() + " ");
+        movieAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -192,7 +226,8 @@ public class MovieMain extends AppCompatActivity implements View.OnClickListener
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             progress.dismiss();
-            showMovie();
+            //showMovie();
+            prepareData();
         }
     }
 
@@ -209,6 +244,12 @@ public class MovieMain extends AppCompatActivity implements View.OnClickListener
             String releaseYear = object.getString("release_date").substring(0,4);
             String posterPath = object.getString("poster_path");
 
+            //Log.i("movieList", title + " " + id + " " + releaseYear + " " + rating + " " + posterPath);
+
+            Movies movie = new Movies(title, id, releaseYear, rating, "http://image.tmdb.org/t/p/w185" + posterPath);
+            moviesNewList.add(movie);
+
+
             HashMap<String, String> map = new HashMap<>();
             map.put("title", title);
             map.put("rating", rating);
@@ -220,20 +261,22 @@ public class MovieMain extends AppCompatActivity implements View.OnClickListener
             movieList.add(map);
         }
 
+        //movieAdapter.notifyDataSetChanged();
+
     }
 
-    public void showMovie(){
-        movieGrid.setAdapter(new ImageAdapter(this, movieList));
-        movieGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                HashMap<String, String> object = movieList.get(position);
-                Intent i = new Intent(MovieMain.this, MovieDetails.class);
-                i.putExtra("id", object.get("id"));
-                startActivity(i);
-            }
-        });
-    }
+//    public void showMovie(){
+//        movieGrid.setAdapter(new ImageAdapter(this, movieList));
+//        movieGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                HashMap<String, String> object = movieList.get(position);
+//                Intent i = new Intent(MovieMain.this, MovieDetails.class);
+//                i.putExtra("id", object.get("id"));
+//                startActivity(i);
+//            }
+//        });
+//    }
 
     public void restartActivity(Boolean popular){
         Intent intent = getIntent();
