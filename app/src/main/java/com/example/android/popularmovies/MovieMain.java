@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.GridView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,14 +30,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MovieMain extends AppCompatActivity implements View.OnClickListener{
-    GridView movieGrid;
     Boolean isPopular;
     String jsonStr;
-    ArrayList<HashMap<String, String>> movieList = new ArrayList<>();
     private Boolean isFabOpen = false;
     private FloatingActionButton fab,fab1,fab2;
     private Animation fab_open,fab_close,rotate_forward,rotate_backward;
@@ -62,7 +58,6 @@ public class MovieMain extends AppCompatActivity implements View.OnClickListener
         progress.setMessage("Please wait while loading...");
         progress.show();
 
-        //movieGrid = (GridView) findViewById(R.id.movieGridView);
 
 
         fab = (FloatingActionButton)findViewById(R.id.fab);
@@ -92,10 +87,7 @@ public class MovieMain extends AppCompatActivity implements View.OnClickListener
         }
         getMovies.execute();
 
-        Log.i("movie", "reached cp-1");
-        //*****
         movieRecycler = (RecyclerView) findViewById(R.id.movie_recycler);
-        //movieRecycler.setHasFixedSize(true);
 
         layoutManager = new GridLayoutManager(getApplicationContext(), 2);
 
@@ -104,9 +96,6 @@ public class MovieMain extends AppCompatActivity implements View.OnClickListener
         movieAdapter = new MovieAdapter(moviesNewList, context);
         movieRecycler.setLayoutManager(layoutManager);
         movieRecycler.setAdapter(movieAdapter);
-
-
-        //*****
 
     }
 
@@ -226,7 +215,6 @@ public class MovieMain extends AppCompatActivity implements View.OnClickListener
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             progress.dismiss();
-            //showMovie();
             prepareData();
         }
     }
@@ -238,45 +226,21 @@ public class MovieMain extends AppCompatActivity implements View.OnClickListener
         for (int i = 0; i < resultsArray.length(); i ++){
             JSONObject object = resultsArray.getJSONObject(i);
             String title = object.getString("title");
-            String overview = object.getString("overview");
             String rating = object.getString("vote_average");
             String id = object.getString("id");
             String releaseYear = object.getString("release_date").substring(0,4);
             String posterPath = object.getString("poster_path");
 
-            //Log.i("movieList", title + " " + id + " " + releaseYear + " " + rating + " " + posterPath);
 
             Movies movie = new Movies(title, id, releaseYear, rating, "http://image.tmdb.org/t/p/w185" + posterPath);
             moviesNewList.add(movie);
 
-
-            HashMap<String, String> map = new HashMap<>();
-            map.put("title", title);
-            map.put("rating", rating);
-            map.put("releaseYear", releaseYear);
-            map.put("overview", overview);
-            map.put("id", id);
-            map.put("posterUrl", "http://image.tmdb.org/t/p/w185" + posterPath);
-
-            movieList.add(map);
         }
 
-        //movieAdapter.notifyDataSetChanged();
 
     }
 
-//    public void showMovie(){
-//        movieGrid.setAdapter(new ImageAdapter(this, movieList));
-//        movieGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                HashMap<String, String> object = movieList.get(position);
-//                Intent i = new Intent(MovieMain.this, MovieDetails.class);
-//                i.putExtra("id", object.get("id"));
-//                startActivity(i);
-//            }
-//        });
-//    }
+
 
     public void restartActivity(Boolean popular){
         Intent intent = getIntent();
